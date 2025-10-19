@@ -3,152 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake Tinder</title>
+    <title>Tinder</title>
+    <meta name="theme-color" content="#FF4458">
+    <meta name="description" content="Tinder - Finde dein Match">
+    
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tinder">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #ff4458, #ff6b6b);
             color: white;
             min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 80px;
         }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-like {
+            background: #4CD964;
+            color: white;
+        }
+
+        .btn-dislike {
+            background: #FF3B30;
+            color: white;
+        }
+
+        .btn-superlike {
+            background: #007AFF;
+            color: white;
+        }
+
+        .notification-section {
+            margin-top: 30px;
+        }
+
         .notification {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
             padding: 15px;
             margin: 10px 0;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            border-left: 4px solid #FF4458;
         }
-        button {
+
+        .notification-time {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .install-btn {
             background: white;
-            color: #ff4458;
+            color: #FF4458;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 25px;
             border-radius: 25px;
             font-size: 16px;
-            margin: 10px;
-            cursor: pointer;
             font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
+
+        .status {
             text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* PWA Install Prompt */
+        #installPrompt {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        #installPrompt button {
+            background: #FF4458;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎯 Fake Tinder</h1>
-        <p>Simulation einer Dating-App mit echten Benachrichtigungen</p>
+    <div class="header">
+        <div class="logo">🔥</div>
+        <h1>Tinder</h1>
+        <p class="subtitle">Finde dein nächstes Match</p>
+    </div>
+
+    <div class="card">
+        <div class="profile-img">👩</div>
+        <h3 style="text-align: center;">Sarah, 24</h3>
+        <p style="text-align: center; opacity: 0.8;">📍 2km entfernt</p>
+        <p style="text-align: center; margin: 10px 0;">💬 "Liebe Reisen und gutes Essen!"</p>
         
-        <button onclick="enableNotifications()">🔔 Benachrichtigungen aktivieren</button>
-        <button onclick="testNotification()">🧪 Test-Benachrichtigung</button>
-        
+        <div class="buttons">
+            <button class="btn btn-dislike" onclick="swipe('dislike')">✕</button>
+            <button class="btn btn-superlike" onclick="swipe('superlike')">⭐</button>
+            <button class="btn btn-like" onclick="swipe('like')">❤️</button>
+        </div>
+    </div>
+
+    <div class="notification-section">
+        <h3>🔔 Aktivitäten</h3>
         <div id="notifications"></div>
     </div>
 
+    <div class="status">
+        <p id="statusText">PWA wird geladen...</p>
+        <button class="install-btn" onclick="enableNotifications()" id="notifyBtn">
+            🔔 Benachrichtigungen aktivieren
+        </button>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div id="installPrompt" style="display: none;">
+        <p>Installiere Tinder für die beste Erfahrung!</p>
+        <button onclick="installPWA()">Jetzt installieren</button>
+        <button onclick="dismissInstall()">Später</button>
+    </div>
+
     <script>
-        // Service Worker registrieren
+        // PWA Install Prompt
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').style.display = 'block';
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWA installiert');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installPrompt').style.display = 'none';
+                });
+            }
+        }
+
+        function dismissInstall() {
+            document.getElementById('installPrompt').style.display = 'none';
+        }
+
+        // Service Worker Registrierung
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/faketinder-app/service-worker.js')
+            navigator.serviceWorker.register('sw.js')
                 .then(registration => {
                     console.log('Service Worker registriert');
+                    document.getElementById('statusText').textContent = '✅ PWA bereit!';
                     startTinderNotifications();
                 })
                 .catch(error => {
                     console.log('Service Worker Fehler:', error);
+                    document.getElementById('statusText').textContent = '❌ PWA nicht verfügbar';
                 });
         }
 
+        // Benachrichtigungen aktivieren
         async function enableNotifications() {
             try {
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
-                    showMessage('✅ Benachrichtigungen aktiviert!');
+                    document.getElementById('notifyBtn').textContent = '✅ Benachrichtigungen aktiv';
+                    document.getElementById('notifyBtn').style.background = '#4CD964';
+                    document.getElementById('notifyBtn').style.color = 'white';
+                    showNotification('🔔 Benachrichtigungen aktiviert!');
                     
                     // Starte verschiedene Benachrichtigungen
-                    scheduleNotification("🔥 Likes aufgefühlt!", 10000); // 10 Sek
-                    scheduleNotification("💖 5 neue Matches!", 30000); // 30 Sek
-                    scheduleNotification("⭐ Superlikes verfügbar!", 60000); // 1 Min
-                    scheduleNotification("👀 3 Profile angesehen", 120000); // 2 Min
-                    
-                    showMessage('⏰ Tinder-Benachrichtigungen starten in 10 Sekunden...');
+                    scheduleTinderNotifications();
                 }
             } catch (error) {
                 console.error('Fehler:', error);
             }
         }
 
-        function scheduleNotification(message, delay) {
-            setTimeout(() => {
-                if (Notification.permission === 'granted') {
-                    // Browser-Benachrichtigung
-                    new Notification("Tinder", {
-                        body: message,
-                        icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>",
-                        badge: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>"
-                    });
-                    
+        // Tinder Benachrichtigungen planen
+        function scheduleTinderNotifications() {
+            // Verschiedene Benachrichtigungstypen
+            const notifications = [
+                { time: 15000, message: "🔥 Deine Likes wurden aufgefühlt!", type: "likes" },
+                { time: 30000, message: "💖 Sarah hat dich geliked!", type: "match" },
+                { time: 45000, message: "⭐ Superlikes sind wieder verfügbar!", type: "superlike" },
+                { time: 60000, message: "👀 5 Profile haben dich angesehen", type: "views" },
+                { time: 90000, message: "🎯 Neues Match mit Anna!", type: "match" },
+                { time: 120000, message: "💬 Max: Hey, wie geht's?", type: "message" }
+            ];
+
+            notifications.forEach(notif => {
+                setTimeout(() => {
+                    if (Notification.permission === 'granted') {
+                        // Browser-Benachrichtigung
+                        new Notification("Tinder", {
+                            body: notif.message,
+                            icon: "/icons/icon-192.png",
+                            badge: "/icons/icon-192.png",
+                            vibrate: [200, 100, 200],
+                            tag: notif.type
+                        });
+                    }
                     // In-App Benachrichtigung
-                    showInAppNotification(message);
+                    addInAppNotification(notif.message);
+                }, notif.time);
+            });
+
+            // Wiederholende Benachrichtigungen alle 2 Minuten
+            setInterval(() => {
+                const messages = [
+                    "🔥 Likes aufgefühlt! Weiterswipe!",
+                    "💖 Neue potenzielle Matches in deiner Nähe!",
+                    "⭐ Verpasse keine Chancen - swipe jetzt!"
+                ];
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                
+                if (Notification.permission === 'granted') {
+                    new Notification("Tinder", {
+                        body: randomMsg,
+                        icon: "/icons/icon-192.png"
+                    });
                 }
-            }, delay);
+                addInAppNotification(randomMsg);
+            }, 120000); // Alle 2 Minuten
         }
 
-        function showInAppNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerHTML = `
-                <strong>🔔 Tinder</strong><br>
-                ${message}<br>
-                <small>${new Date().toLocaleTimeString()}</small>
+        // Swipe-Funktion
+        function swipe(type) {
+            const actions = {
+                like: { message: "❤️ Like gesendet!", sound: "positive" },
+                dislike: { message: "✕ Nächstes Profil", sound: "negative" },
+                superlike: { message: "⭐ Superlike gesendet!", sound: "special" }
+            };
+            
+            const action = actions[type];
+            showNotification(action.message);
+            
+            // Nächstes "Profil" anzeigen nach 1 Sekunde
+            setTimeout(() => {
+                showNotification("🎯 Neues Profil geladen");
+            }, 1000);
+        }
+
+        // In-App Benachrichtigung anzeigen
+        function addInAppNotification(message) {
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = 'notification';
+            notificationDiv.innerHTML = `
+                <strong>Tinder</strong><br>
+                ${message}
+                <div class="notification-time">${new Date().toLocaleTimeString()}</div>
             `;
             
-            document.getElementById('notifications').prepend(notification);
+            const container = document.getElementById('notifications');
+            container.insertBefore(notificationDiv, container.firstChild);
             
+            // Nach 8 Sekunden entfernen
             setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
+                if (notificationDiv.parentNode) {
+                    notificationDiv.remove();
                 }
-            }, 10000);
+            }, 8000);
         }
 
-        function testNotification() {
-            if (Notification.permission === 'granted') {
-                new Notification("Tinder Test", {
-                    body: "🎯 Test erfolgreich! Benachrichtigungen funktionieren!",
-                    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>"
-                });
-                showInAppNotification("Test-Benachrichtigung erfolgreich!");
-            } else {
-                showMessage('❌ Bitte zuerst Benachrichtigungen aktivieren!');
-            }
+        function showNotification(message) {
+            addInAppNotification(message);
         }
 
-        function showMessage(text) {
-            const existingMsg = document.querySelector('.temp-message');
-            if (existingMsg) existingMsg.remove();
-            
-            const msg = document.createElement('div');
-            msg.className = 'notification temp-message';
-            msg.textContent = text;
-            document.getElementById('notifications').prepend(msg);
-            
-            setTimeout(() => {
-                if (msg.parentNode) msg.remove();
-            }, 3000);
-        }
-
-        // Automatisch nach 2 Sekunden Berechtigung anfragen
+        // Starte automatisch nach 3 Sekunden
         setTimeout(() => {
             if (Notification.permission === 'default') {
-                showMessage('💡 Tipp: Aktiviere Benachrichtigungen für das volle Tinder-Erlebnis!');
+                document.getElementById('statusText').textContent = '💡 Aktiviere Benachrichtigungen für das volle Erlebnis!';
             }
-        }, 2000);
+        }, 3000);
+
+        // Zeige Install-Hinweis nach 10 Sekunden
+        setTimeout(() => {
+            if (!deferredPrompt) {
+                document.getElementById('installPrompt').style.display = 'block';
+            }
+        }, 10000);
     </script>
 </body>
 </html>
