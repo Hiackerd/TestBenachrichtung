@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Tinder</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff4458, #ff6b6b);
+            color: white;
+            min-height: 100vh;
+        }
+        .notification {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        button {
+            background: white;
+            color: #ff4458;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Fake Tinder</h1>
+        <p>Simulation einer Dating-App mit echten Benachrichtigungen</p>
+        
+        <button onclick="enableNotifications()">🔔 Benachrichtigungen aktivieren</button>
+        <button onclick="testNotification()">🧪 Test-Benachrichtigung</button>
+        
+        <div id="notifications"></div>
+    </div>
+
+    <script>
+        // Service Worker registrieren
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/faketinder-app/service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registriert');
+                    startTinderNotifications();
+                })
+                .catch(error => {
+                    console.log('Service Worker Fehler:', error);
+                });
+        }
+
+        async function enableNotifications() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    showMessage('✅ Benachrichtigungen aktiviert!');
+                    
+                    // Starte verschiedene Benachrichtigungen
+                    scheduleNotification("🔥 Likes aufgefühlt!", 10000); // 10 Sek
+                    scheduleNotification("💖 5 neue Matches!", 30000); // 30 Sek
+                    scheduleNotification("⭐ Superlikes verfügbar!", 60000); // 1 Min
+                    scheduleNotification("👀 3 Profile angesehen", 120000); // 2 Min
+                    
+                    showMessage('⏰ Tinder-Benachrichtigungen starten in 10 Sekunden...');
+                }
+            } catch (error) {
+                console.error('Fehler:', error);
+            }
+        }
+
+        function scheduleNotification(message, delay) {
+            setTimeout(() => {
+                if (Notification.permission === 'granted') {
+                    // Browser-Benachrichtigung
+                    new Notification("Tinder", {
+                        body: message,
+                        icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>",
+                        badge: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>"
+                    });
+                    
+                    // In-App Benachrichtigung
+                    showInAppNotification(message);
+                }
+            }, delay);
+        }
+
+        function showInAppNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <strong>🔔 Tinder</strong><br>
+                ${message}<br>
+                <small>${new Date().toLocaleTimeString()}</small>
+            `;
+            
+            document.getElementById('notifications').prepend(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 10000);
+        }
+
+        function testNotification() {
+            if (Notification.permission === 'granted') {
+                new Notification("Tinder Test", {
+                    body: "🎯 Test erfolgreich! Benachrichtigungen funktionieren!",
+                    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>"
+                });
+                showInAppNotification("Test-Benachrichtigung erfolgreich!");
+            } else {
+                showMessage('❌ Bitte zuerst Benachrichtigungen aktivieren!');
+            }
+        }
+
+        function showMessage(text) {
+            const existingMsg = document.querySelector('.temp-message');
+            if (existingMsg) existingMsg.remove();
+            
+            const msg = document.createElement('div');
+            msg.className = 'notification temp-message';
+            msg.textContent = text;
+            document.getElementById('notifications').prepend(msg);
+            
+            setTimeout(() => {
+                if (msg.parentNode) msg.remove();
+            }, 3000);
+        }
+
+        // Automatisch nach 2 Sekunden Berechtigung anfragen
+        setTimeout(() => {
+            if (Notification.permission === 'default') {
+                showMessage('💡 Tipp: Aktiviere Benachrichtigungen für das volle Tinder-Erlebnis!');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
